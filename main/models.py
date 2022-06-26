@@ -50,7 +50,7 @@ class Race(models.Model):
         ("M", "Miles"),
         ("K", "Kilometres"),
     ]
-    match_text = models.CharField(max_length=254)
+    match_text = models.CharField(max_length=254, null=True, blank=True)
     distance_unit = models.CharField(max_length=1, choices=DISTANCE_UNIT_CHOICES)
     route_gpx = models.FileField(upload_to="route-gpx", blank=True, null=True)
     route_image = models.FileField(upload_to="route-image", blank=True, null=True)
@@ -65,8 +65,10 @@ class Race(models.Model):
         "self",
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
         limit_choices_to={"type": "RELAY_PARENT"},
     )
+    leg_number = models.PositiveSmallIntegerField(null=True, blank=True)
 
 
 class Activity(models.Model):
