@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0015_alter_race_match_text_alter_race_parent_race'),
+        ("main", "0015_alter_race_match_text_alter_race_parent_race"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='race',
-            name='leg_number',
+            model_name="race",
+            name="leg_number",
             field=models.PositiveSmallIntegerField(blank=True, null=True),
         ),
     ]

@@ -20,12 +20,16 @@ def get_user_for_strava_id(strava_id):
 
 def get_subscription():
     client = Client()
-    strava_app = SocialApp.objects.get(name='Strava')
-    subscriptions = client.list_subscriptions(client_id=strava_app.client_id, client_secret=strava_app.secret)
+    strava_app = SocialApp.objects.get(name="Strava")
+    subscriptions = client.list_subscriptions(
+        client_id=strava_app.client_id, client_secret=strava_app.secret
+    )
     subscription_count = 0
     for subscription in subscriptions:
         subscription_count += 1
-        logger.info(f"Subscription present with url {subscription.callback_url} created at {subscription.created_at}")
+        logger.info(
+            f"Subscription present with url {subscription.callback_url} created at {subscription.created_at}"
+        )
     if not subscription_count:
         logger.warning("There is currently no Strava webhook subscription set up")
         site_domain = Site.objects.get_current().domain
@@ -33,7 +37,7 @@ def get_subscription():
             client_id=strava_app.client_id,
             client_secret=strava_app.secret,
             callback_url=f"https://{site_domain}/strava/webhook/{challenge.settings.STRAVA_VERIFY_TOKEN}",
-            verify_token=challenge.settings.STRAVA_VERIFY_TOKEN
+            verify_token=challenge.settings.STRAVA_VERIFY_TOKEN,
         )
 
 
@@ -41,13 +45,11 @@ def verify_callback(request):
     client = Client()
     try:
         strava_request = {
-            k: request.GET[k]
-            for k in ("hub.challenge", "hub.mode", "hub.verify_token")
+            k: request.GET[k] for k in ("hub.challenge", "hub.mode", "hub.verify_token")
         }
         logger.info("Handled valid Strava subscription callback")
         return client.handle_subscription_callback(
-            strava_request,
-            verify_token=challenge.settings.STRAVA_VERIFY_TOKEN
+            strava_request, verify_token=challenge.settings.STRAVA_VERIFY_TOKEN
         )
     except (AssertionError, MultiValueDictKeyError):
         logger.warning("Handled invalid Strava subscription callback")

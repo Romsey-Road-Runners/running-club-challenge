@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0002_activity_age_grade'),
+        ("main", "0002_activity_age_grade"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='race',
-            name='match_text',
-            field=models.CharField(default='things', max_length=254),
+            model_name="race",
+            name="match_text",
+            field=models.CharField(default="things", max_length=254),
             preserve_default=False,
         ),
     ]

@@ -7,7 +7,7 @@ logger = logging.getLogger()
 
 
 class Command(BaseCommand):
-    help = 'Ensure we have a Strava subscription set up'
+    help = "Ensure we have a Strava subscription set up"
 
     def handle(self, *args, **options):
         get_subscription()

@@ -10,7 +10,7 @@ logger = logging.getLogger()
 
 
 class Command(BaseCommand):
-    help = 'Gets any new athlete activities from Strava'
+    help = "Gets any new athlete activities from Strava"
 
     def handle(self, *args, **options):
         for athlete in Athlete.objects.all():
@@ -19,5 +19,7 @@ class Command(BaseCommand):
             try:
                 update_user_strava_activities(user)
             except RateLimitExceeded:
-                logger.warning(f"Strava rate limit exceeded. Updates will be picked up next time.")
+                logger.warning(
+                    f"Strava rate limit exceeded. Updates will be picked up next time."
+                )
                 sys.exit(0)

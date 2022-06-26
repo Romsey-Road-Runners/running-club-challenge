@@ -4,7 +4,7 @@ from .models import Athlete, Race, Activity
 
 
 class AthleteAdmin(admin.ModelAdmin):
-    list_display = ('user', 'sex', 'DOB', 'has_photo')
+    list_display = ("user", "sex", "DOB", "has_photo")
 
 
 admin.site.register(Athlete, AthleteAdmin)

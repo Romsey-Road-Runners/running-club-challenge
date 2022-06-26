@@ -7,28 +7,43 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0013_rename_gender_athlete_sex'),
+        ("main", "0013_rename_gender_athlete_sex"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='race',
-            name='parent_race',
-            field=models.ForeignKey(limit_choices_to={'type': 'RELAY_PARENT'}, null=True, on_delete=django.db.models.deletion.CASCADE, to='main.race'),
+            model_name="race",
+            name="parent_race",
+            field=models.ForeignKey(
+                limit_choices_to={"type": "RELAY_PARENT"},
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="main.race",
+            ),
         ),
         migrations.AddField(
-            model_name='race',
-            name='type',
-            field=models.CharField(choices=[('TIME_TRIAL', 'Time Trial'), ('RELAY_PARENT', 'Relay'), ('RELAY_LEG', 'Relay Leg')], default='TIME_TRIAL', max_length=12),
+            model_name="race",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("TIME_TRIAL", "Time Trial"),
+                    ("RELAY_PARENT", "Relay"),
+                    ("RELAY_LEG", "Relay Leg"),
+                ],
+                default="TIME_TRIAL",
+                max_length=12,
+            ),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='elapsed_time',
-            field=models.DurationField(verbose_name='Elapsed Time (MM:SS) or (HH:MM:SS)'),
+            model_name="activity",
+            name="elapsed_time",
+            field=models.DurationField(
+                verbose_name="Elapsed Time (MM:SS) or (HH:MM:SS)"
+            ),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='start_time',
-            field=models.DateTimeField(verbose_name='Start Time (DD/MM/YYYY HH:MM)'),
+            model_name="activity",
+            name="start_time",
+            field=models.DateTimeField(verbose_name="Start Time (DD/MM/YYYY HH:MM)"),
         ),
     ]
