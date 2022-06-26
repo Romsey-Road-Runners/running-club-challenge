@@ -22,9 +22,7 @@ class Athlete(models.Model):
         ("F", "Female"),
         ("M", "Male"),
     ]
-    sex = models.CharField(
-        max_length=1, choices=SEX_CHOICES, blank=True, null=True
-    )
+    sex = models.CharField(max_length=1, choices=SEX_CHOICES, blank=True, null=True)
     dob = models.DateField(
         name="DOB", verbose_name="Date of Birth", blank=True, null=True
     )
@@ -54,9 +52,21 @@ class Race(models.Model):
     ]
     match_text = models.CharField(max_length=254)
     distance_unit = models.CharField(max_length=1, choices=DISTANCE_UNIT_CHOICES)
-    route_gpx = models.FileField(upload_to='route-gpx', blank=True, null=True)
-    route_image = models.FileField(upload_to='route-image', blank=True, null=True)
+    route_gpx = models.FileField(upload_to="route-gpx", blank=True, null=True)
+    route_image = models.FileField(upload_to="route-image", blank=True, null=True)
     strava_segment_id = models.BigIntegerField(blank=True, null=True)
+    TYPE_CHOICES = [
+        ("TIME_TRIAL", "Time Trial"),
+        ("RELAY_PARENT", "Relay"),
+        ("RELAY_LEG", "Relay Leg"),
+    ]
+    type = models.CharField(max_length=12, choices=TYPE_CHOICES, default="TIME_TRIAL")
+    parent_race = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        limit_choices_to={"type": "RELAY_PARENT"},
+    )
 
 
 class Activity(models.Model):
@@ -69,13 +79,17 @@ class Activity(models.Model):
     race = models.ForeignKey(Race, on_delete=models.CASCADE)
     athlete = models.ForeignKey(Athlete, on_delete=models.CASCADE)
     start_time = models.DateTimeField(verbose_name="Start Time (DD/MM/YYYY HH:MM)")
-    elapsed_time = models.DurationField(verbose_name="Elapsed Time (MM:SS) or (HH:MM:SS)")
+    elapsed_time = models.DurationField(
+        verbose_name="Elapsed Time (MM:SS) or (HH:MM:SS)"
+    )
     age_grade = models.FloatField(editable=False)
-    evidence_file = models.FileField(upload_to='evidence', blank=True, null=True)
+    evidence_file = models.FileField(upload_to="evidence", blank=True, null=True)
     strava_activity_id = models.BigIntegerField(blank=True, null=True)
     hidden_from_results = models.BooleanField(default=False)
 
 
 @receiver(pre_save, sender=Activity)
 def calculate_age_grading(sender, instance, *args, **kwargs):
-    instance.age_grade = get_activity_age_grade(instance.athlete, instance.elapsed_time, instance.race, instance.start_time)
+    instance.age_grade = get_activity_age_grade(
+        instance.athlete, instance.elapsed_time, instance.race, instance.start_time
+    )
