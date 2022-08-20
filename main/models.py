@@ -46,6 +46,7 @@ class Event(models.Model):
     name = models.CharField(max_length=254)
     description_html = models.TextField(default='')
     active = models.BooleanField(default=True)
+    relay = models.BooleanField(default=False)
     show_total_distance = models.BooleanField(default=False)
     route_gpx = models.FileField(upload_to='route-gpx', blank=True, null=True)
     route_image = models.FileField(upload_to='route-image', blank=True, null=True)

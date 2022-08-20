@@ -78,7 +78,13 @@
       display_gpx(document.getElementById('event'));
     </script>
     {% endif %}
+
+    {% if event.relay %}
+    <h2>Legs</h2>
+    {% else %}
     <h2>Races</h2>
+    {% endif %}
+
     {% if race_list %}
     <table class="table">
         <thead>
@@ -110,6 +116,5 @@
     {{ event.description_html }}
     {% endautoescape %}
     {% endif %}
-    <img style="margin-left: -15;" src="{% static 'main/api_logo_cptblWith_strava_stack_light.png' %}"/>
 </div>
 {% endblock content %}
