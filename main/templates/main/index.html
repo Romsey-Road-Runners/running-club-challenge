@@ -5,11 +5,17 @@
 <div class="container">
     <h3>Welcome to the Romsey Road Runners Race Results site!</h3>
     <p>You can view and submit results for events organised by Romsey Road Runners.</p>
+    {% if event_list %}
     <p>Current events:
         <ul>
-            <li><a href="/event/2">Test Way Relay</a></li>
+            {% for event in event_list %}
+            <li><a href="{% url 'event' event.id %}">{{ event.name }}</a></li>
+            {% endfor %}
         </ul>
     </p>
+    {% else %}
+    <p>No events are available yet.</p>
+    {% endif %}
     <img style="margin-left: -15;" src="{% static 'main/api_logo_cptblWith_strava_stack_light.png' %}"/>
 </div>
 {% endblock content %}

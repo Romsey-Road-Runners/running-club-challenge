@@ -120,4 +120,8 @@ def submitting_results(request):
 
 
 def index(request):
-    return render(request, 'main/index.html')
+    events = Event.objects.filter(active=True).order_by('name')
+    template_context = {
+        'event_list': events
+    }
+    return render(request, 'main/index.html', template_context)
