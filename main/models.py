@@ -39,6 +39,15 @@ class Athlete(models.Model):
         return False
 
 
+class Event(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=254)
+    show_total_distance = models.BooleanField(default=False)
+    route_gpx = models.FileField(upload_to='route-gpx', blank=True, null=True)
+    route_image = models.FileField(upload_to='route-image', blank=True, null=True)
+
 class Race(models.Model):
     def __str__(self):
         return self.name
