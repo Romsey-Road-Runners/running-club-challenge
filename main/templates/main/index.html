@@ -1,52 +1,15 @@
 {% extends '../account/base.html' %}
-{% block head_title %}Romsey Road Runners Club Challenge{% endblock %}
+{% block head_title %}Romsey Road Runners Race Results{% endblock %}
 {% load static %}
 {% block content %}
 <div class="container">
-    <h3>Welcome to the Romsey Road Runners Club Challenge 2022!</h3>
-    <p>The details are as follows:</p>
-    <ul>
-        <li>Follows on from 2021's Virtual Race Series</li>
-        <li>Free to all members</li>
-        <li>Trail and road options available for each distance</li>
-        <li>Choose whether you do road, trail or both</li>
-        <li>One distance is open per month (see <a href="{% url 'race_list' %}">Races</a>)
-            <ul>
-            <li>January - 5k</li>
-            <li>February - 5 mile</li>
-            <li>March - 10k</li>
-            <li>April - 10 mile</li>
-            <li>May - Half marathon</li>
-             </ul>
-        </li>
-        <li>Run as many times as you like during that month. Only your fastest time for each race will show on the
-            leaderboard, but as Road and Trail are counted as separate races you can enter times for both and they will
-            both be counted.</li>
-        <li>We will accept Strava activities, GPX files, a photo of your watch (or equivalent) showing time and distance
-            as evidence of your result</li>
-        <li>The winners are the fastest female and male runners for each distance and type
-            (eg fastest road 5k, fastest trail 5k) and the best age-graded male and female runner for each distance and
-            type</li>
-        <li>None of the routes are marked; please use the maps and GPX files provided on
-            <a href="{% url 'race_list' %}">the race pages</a> to follow the route. Please make sure you start and
-            finish where the downloadable map indicates so we’re all running the same route in the same way.</li>
-        <li>Actual course distances often do not exactly match the race distance. The race pages have a good estimate of
-            the actual distance, but please use the marked start and finish points on the downloadable map.</li>
-        <li>Please don't pause your watch mid route; we need your best elapsed time not moving time to enter you into
-            the results</li>
-        <li>By taking part you are consenting for the organisers to use your date of birth to calculate your age-graded
-            results. Only your age-graded results without any personal data will be published. If anyone would prefer
-            not to be included in the age-graded results please let us know and we will accommodate this.</a>
-        </li>
-        <li>
-            Your results can be automatically captured from Strava if you Sign Up with the "Connect with Strava" option.
-            However other options for submitting results are available.
-        </li>
-        <li>
-            <a href="{% url 'submitting_results' %}">Full details of the signup options and how to Submit Results are available here.</a>
-        </li>
-    </ul>
-
+    <h3>Welcome to the Romsey Road Runners Race Results site!</h3>
+    <p>You can view and submit results for events organised by Romsey Road Runners.</p>
+    <p>Current events:
+        <ul>
+            <li><a href="/event/2">Test Way Relay</a></li>
+        </ul>
+    </p>
     <img style="margin-left: -15;" src="{% static 'main/api_logo_cptblWith_strava_stack_light.png' %}"/>
 </div>
 {% endblock content %}

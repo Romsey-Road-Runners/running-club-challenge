@@ -3,12 +3,20 @@ from django.http import HttpResponseRedirect, HttpResponseBadRequest, HttpRespon
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
-from main.models import Activity, Race
+from main.models import Activity, Event, Race
 from main.forms import SubmitResultForm
 from main.utils import get_athlete_for_user
 from main.strava_webhook import verify_callback, handle_callback
 from datetime import date
 
+def event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    races = Race.objects.filter(event=event).order_by('start_date', 'name')
+    template_context = {
+        'event': event,
+        'race_list': races
+    }
+    return render(request, 'main/event.html', template_context)
 
 def race_results(request, race_id):
     race = get_object_or_404(Race, id=race_id)
@@ -82,14 +90,12 @@ def submit_result(request):
 
     return render(request, 'main/submit_result.html', {'form': form})
 
-
-def race_list(request):
-    races = Race.objects.order_by('start_date', 'name')
+def event_list(request):
+    events = Event.objects.order_by('name')
     template_context = {
-        'race_list': races
+        'event_list': events
     }
-    return render(request, 'main/race_list.html', template_context)
-
+    return render(request, 'main/event_list.html', template_context)
 
 @csrf_exempt
 def strava_webhook(request):

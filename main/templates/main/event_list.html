@@ -1,0 +1,25 @@
+{% extends '../account/base.html' %}
+{% block head_title %}Romsey Road Runners Race Results | Previous Events{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Events</h2>
+    {% if event_list %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for event in event_list %}
+        <tr>
+            <td><a href="{% url 'event' event.id %}">{{ event.name }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No events are available yet.</p>
+    {% endif %}
+</div>
+{% endblock content %}
