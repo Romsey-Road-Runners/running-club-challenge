@@ -53,6 +53,7 @@ class Race(models.Model):
         return self.name
 
     name = models.CharField(max_length=254)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     distance = models.DecimalField(max_digits=5, decimal_places=2)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Athlete, Race, Activity
+from .models import Athlete, Event, Race, Activity
 
 
 class AthleteAdmin(admin.ModelAdmin):
@@ -8,6 +8,7 @@ class AthleteAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Athlete, AthleteAdmin)
+admin.site.register(Event)
 admin.site.register(Race)
 admin.site.register(Activity)
 admin.site.site_header = "RRR Challenge administration"
