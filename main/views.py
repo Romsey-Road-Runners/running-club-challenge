@@ -54,7 +54,6 @@ def race_results(request, race_id):
     }
     return render(request, 'main/race_results.html', template_context)
 
-
 @login_required
 def submit_result(request):
     # if this is a POST request we need to process the form data
@@ -86,12 +85,13 @@ def submit_result(request):
         form.fields["race"].queryset = Race.objects.filter(
             submissions_close__gte=date.today(),
             start_date__lte=date.today(),
+            event__active=True
         )
 
     return render(request, 'main/submit_result.html', {'form': form})
 
 def event_list(request):
-    events = Event.objects.order_by('name')
+    events = Event.objects.filter(active=False).order_by('name')
     template_context = {
         'event_list': events
     }

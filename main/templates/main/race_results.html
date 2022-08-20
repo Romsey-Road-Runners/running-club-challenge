@@ -28,6 +28,11 @@
     For the more technical amongst you there is also a <a href="{{ race.route_gpx.url }}">GPX file available</a> which
     can be loaded into watches or phone apps for navigation.
     </p>
+    {% endif %}
+    <p>
+      If your are using Strava to submit your results sure your activities include <i>"{{ race.match_text }}"</i> <i>somewhere</i> in the title. This text is not case sensitive.
+    </p>
+    {% if race.route_gpx %}
     <div id="race" class="gpx" data-gpx-source="{{ race.route_gpx.url }}" data-map-target="race-map">
     <article>
         <div class="map" id="race-map"></div>
