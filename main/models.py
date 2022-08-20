@@ -39,11 +39,25 @@ class Athlete(models.Model):
         return False
 
 
+class Event(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=254)
+    description_html = models.TextField(default='')
+    active = models.BooleanField(default=True)
+    relay = models.BooleanField(default=False)
+    show_total_distance = models.BooleanField(default=False)
+    route_gpx = models.FileField(upload_to='route-gpx', blank=True, null=True)
+    route_image = models.FileField(upload_to='route-image', blank=True, null=True)
+
+
 class Race(models.Model):
     def __str__(self):
         return self.name
 
     name = models.CharField(max_length=254)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     distance = models.DecimalField(max_digits=5, decimal_places=2)

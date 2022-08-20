@@ -1,5 +1,5 @@
 {% extends '../account/base.html' %}
-{% block head_title %}Romsey Road Runners Race Results | {{ race.name }}{% endblock %}
+{% block head_title %}Romsey Road Runners Race Results | {{ event.name }}{% endblock %}
 
 {% block head_links %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css"
@@ -17,25 +17,20 @@
 {% load static %}
 
 <div class="container">
-    <h2>{{ race.name }}</h2>
-    {% if race.route_image %}
+    <h2>{{ event.name }}</h2>
+    {% if event.route_image %}
     <p>
-    A map of the route is <a href="{{ race.route_image.url }}">available here</a>.
+    A map of the route is <a href="{{ event.route_image.url }}">available here</a>.
     </p>
     {% endif %}
-    {% if race.route_gpx %}
+    {% if event.route_gpx %}
     <p>
-    For the more technical amongst you there is also a <a href="{{ race.route_gpx.url }}">GPX file available</a> which
+    For the more technical amongst you there is also a <a href="{{ raeventce.route_gpx.url }}">GPX file available</a> which
     can be loaded into watches or phone apps for navigation.
     </p>
-    {% endif %}
-    <p>
-      If your are using Strava to submit your results sure your activities include <i>"{{ race.match_text }}"</i> <i>somewhere</i> in the title. This text is not case sensitive.
-    </p>
-    {% if race.route_gpx %}
-    <div id="race" class="gpx" data-gpx-source="{{ race.route_gpx.url }}" data-map-target="race-map">
+    <div id="event" class="gpx" data-gpx-source="{{ event.route_gpx.url }}" data-map-target="event-map">
     <article>
-        <div class="map" id="race-map"></div>
+        <div class="map" id="event-map"></div>
       </article>
 
       <footer>
@@ -80,62 +75,46 @@
           _c('distance').textContent = (gpx.get_distance()/1000).toFixed(2);
         }).addTo(map);
       }
-      display_gpx(document.getElementById('race'));
+      display_gpx(document.getElementById('event'));
     </script>
     {% endif %}
-    <h3>Results</h3>
-    {% if not user.is_authenticated %}
-    <p>
-    More detailed results with full names and Strava links are available when logged in.
-    </p>
+
+    {% if event.relay %}
+    <h2>Legs</h2>
+    {% else %}
+    <h2>Races</h2>
     {% endif %}
-    {% for list_name, results in results_dict.items %}
-    <h3>{{ list_name }}</h3>
+
+    {% if race_list %}
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">#</th>
             <th scope="col">Name</th>
-            <th scope="col">Time</th>
-            <th scope="col">Age Grade</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Submissions Close</th>
+            <th scope="col">Distance</th>
         </tr>
         </thead>
         <tbody>
-        {% if results %}
-        {% for result in results %}
+        {% for race in race_list %}
         <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <td>
-                {% if result.athlete.photo and user.is_authenticated %}
-                <img src="{{ result.athlete.photo.url }}" class="rounded-circle" style="width: 32;" />
-                {% endif %}
-                {% if user.is_authenticated %}
-                {{ result.athlete.user.first_name }} {{ result.athlete.user.last_name }}
-                {% else %}
-                {{ result.athlete.user.first_name }} {{ result.athlete.user.last_name.0 }}
-                {% endif %}
-            </td>
-            <td>
-                {% if result.strava_activity_id and user.is_authenticated %}
-                <a href="https://www.strava.com/activities/{{ result.strava_activity_id }}">{{ result.elapsed_time }}</a>
-                {% elif result.evidence_file and user.is_authenticated %}
-                <a href="{{ result.evidence_file.url }}">{{ result.elapsed_time }}</a>
-                {% else %}
-                {{ result.elapsed_time }}
-                {% endif %}
-            </td>
-            <td>{{ result.age_grade|floatformat:2 }}%</td>
+            <td><a href="{% url 'race_results' race.id %}">{{ race.name }}</a></td>
+            <td>{{ race.start_date }}</td>
+            <td>{{ race.end_date }}</td>
+            <td>{{ race.submissions_close }}</td>
+            <td>{{ race.distance.normalize }}{{ race.distance_unit }}</td>
         </tr>
         {% endfor %}
-        {% else %}
-        <tr>
-            <td colspan="4">
-                No results yet. Please check back later!
-            </td>
-        </tr>
-        {% endif %}
         </tbody>
     </table>
-    {% endfor %}
+    {% else %}
+    <p>No races are available yet.</p>
+    {% endif %}
+    {% if event.description_html %}
+    {% autoescape off %}
+    {{ event.description_html }}
+    {% endautoescape %}
+    {% endif %}
 </div>
 {% endblock content %}
