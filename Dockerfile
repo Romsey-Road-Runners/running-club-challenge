@@ -1,6 +1,7 @@
 # Set up a base build container and use to install pip dependencies
 FROM python:3.10-slim-bullseye as base
 FROM base as builder
+RUN apt update -y && apt install -y build-essential libpq-dev
 RUN pip install pipenv
 RUN mkdir /install
 WORKDIR /install
@@ -12,8 +13,6 @@ RUN pip install --ignore-installed --prefix=/install --no-warn-script-location -
 FROM base
 COPY --from=builder /install /usr/local
 
-# Install libpq
-RUN apt update -y && apt install -y libpq5 && apt clean
 
 # Set up /app as our runtime directory
 RUN mkdir /app
