@@ -13,6 +13,8 @@ RUN pip install --ignore-installed --prefix=/install --no-warn-script-location -
 FROM base
 COPY --from=builder /install /usr/local
 
+# Install libpq package to make psycopg2 work
+RUN apt update -y && apt install -y libpq5 && apt clean
 
 # Set up /app as our runtime directory
 RUN mkdir /app
