@@ -52,6 +52,22 @@ class Event(models.Model):
     route_image = models.FileField(upload_to='route-image', blank=True, null=True)
 
 
+class EventTeam(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=254)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+
+class EventTeamAthlete(models.Model):
+    def __str__(self):
+        return self.event_team.__str__() + " - " + self.athlete.__str__()
+
+    event_team = models.ForeignKey(EventTeam, on_delete=models.CASCADE)
+    athlete = models.ForeignKey(Athlete, on_delete=models.PROTECT)
+
+
 class Race(models.Model):
     def __str__(self):
         return self.name
