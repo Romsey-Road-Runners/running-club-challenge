@@ -18,21 +18,35 @@ def get_user_for_strava_id(strava_id):
     return social_account.user
 
 
-def get_subscription():
+def get_subscription(recycle=False):
     client = Client()
     strava_app = SocialApp.objects.get(name='Strava')
     subscriptions = client.list_subscriptions(client_id=strava_app.client_id, client_secret=strava_app.secret)
     subscription_count = 0
     for subscription in subscriptions:
-        subscription_count += 1
         logger.info(f"Subscription present with url {subscription.callback_url} created at {subscription.created_at}")
+        if recycle:
+            client.delete_subscription(
+                subscription.id,
+                client_id=strava_app.client_id,
+                client_secret=strava_app.secret
+            )
+        else:
+            subscription_count += 1
+
     if not subscription_count:
         logger.warning("There is currently no Strava webhook subscription set up")
         site_domain = Site.objects.get_current().domain
+        callback_url = f"https://{site_domain}/strava/webhook/{challenge.settings.STRAVA_VERIFY_TOKEN}"
+        logger.info(f"""Setting up webhook with
+        client_id: {strava_app.client_id}
+        callback_url: {callback_url}
+        verify_token: {challenge.settings.STRAVA_VERIFY_TOKEN}
+        """)
         client.create_subscription(
             client_id=strava_app.client_id,
             client_secret=strava_app.secret,
-            callback_url=f"https://{site_domain}/strava/webhook/{challenge.settings.STRAVA_VERIFY_TOKEN}",
+            callback_url=callback_url,
             verify_token=challenge.settings.STRAVA_VERIFY_TOKEN
         )
 

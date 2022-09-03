@@ -13,5 +13,5 @@ admin.site.register(Race)
 admin.site.register(Activity)
 admin.site.register(EventTeam)
 admin.site.register(EventTeamAthlete)
-admin.site.site_header = "RRR Challenge administration"
-admin.site.site_title = "RRR Challenge admin"
+admin.site.site_header = "RRR Race Results Administration"
+admin.site.site_title = "RRR Race Results Admin"
