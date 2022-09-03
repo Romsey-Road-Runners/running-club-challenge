@@ -118,8 +118,8 @@
         <tr>
             <th scope="col">#</th>
             <th scope="col">Team Name</th>
-            {% for leg in leg_names %}
-            <th scope="col">{{ leg }}</th>
+            {% for race in race_list %}
+            <th scope="col"><a href="{% url 'race_results' race.id %}">{{ race.name }}</a></th>
             {% endfor %}
             <th scope="col">Total Time</th>
         </tr>

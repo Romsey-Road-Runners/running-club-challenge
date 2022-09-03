@@ -49,7 +49,6 @@ def event(request, event_id):
 
         template_context = {
             'event': event,
-            'leg_names': leg_dict.keys(),
             'results_dict': sorted_results_dict,
             'race_list': races
         }
