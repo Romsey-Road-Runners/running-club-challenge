@@ -98,6 +98,9 @@
             <th scope="col">Name</th>
             <th scope="col">Time</th>
             <th scope="col">Age Grade</th>
+            {% if race.event.relay %}
+            <th scope="col">Team</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -106,25 +109,28 @@
         <tr>
             <th scope="row">{{ forloop.counter }}</th>
             <td>
-                {% if result.athlete.photo and user.is_authenticated %}
+                {% if result.0.athlete.photo and user.is_authenticated %}
                 <img src="{{ result.athlete.photo.url }}" class="rounded-circle" style="width: 32;" />
                 {% endif %}
                 {% if user.is_authenticated %}
-                {{ result.athlete.user.first_name }} {{ result.athlete.user.last_name }}
+                {{ result.0.athlete.user.first_name }} {{ result.0.athlete.user.last_name }}
                 {% else %}
-                {{ result.athlete.user.first_name }} {{ result.athlete.user.last_name.0 }}
+                {{ result.0.athlete.user.first_name }} {{ result.0.athlete.user.last_name.0 }}
                 {% endif %}
             </td>
             <td>
-                {% if result.strava_activity_id and user.is_authenticated %}
+                {% if result.0.strava_activity_id and user.is_authenticated %}
                 <a href="https://www.strava.com/activities/{{ result.strava_activity_id }}">{{ result.elapsed_time }}</a>
-                {% elif result.evidence_file and user.is_authenticated %}
+                {% elif result.0.evidence_file and user.is_authenticated %}
                 <a href="{{ result.evidence_file.url }}">{{ result.elapsed_time }}</a>
                 {% else %}
-                {{ result.elapsed_time }}
+                {{ result.0.elapsed_time }}
                 {% endif %}
             </td>
-            <td>{{ result.age_grade|floatformat:2 }}%</td>
+            <td>{{ result.0.age_grade|floatformat:2 }}%</td>
+            {% if race.event.relay %}
+            <td>{{ result.1.name }}</th>
+            {% endif %}
         </tr>
         {% endfor %}
         {% else %}

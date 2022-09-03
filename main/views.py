@@ -62,6 +62,9 @@ def event(request, event_id):
 
 def race_results(request, race_id):
     race = get_object_or_404(Race, id=race_id)
+    if race.event.relay:
+        teams = EventTeam.objects.filter(event=race.event)
+        event_team_athletes = EventTeamAthlete.objects.filter(event_team__in=teams)
 
     activities = Activity.objects.filter(race=race, hidden_from_results=False).order_by('elapsed_time')
     results_dict = {'Female Time': [],
@@ -76,7 +79,11 @@ def race_results(request, race_id):
                 dict_list = 'Female Time'
             else:
                 dict_list = 'Male Time'
-            results_dict[dict_list].append(activity)
+            if race.event.relay:
+                event_team_athlete = event_team_athletes.get(athlete=activity.athlete)
+                results_dict[dict_list].append((activity, event_team_athlete.event_team))
+            else:
+                results_dict[dict_list].append((activity, None))
             processed_athlete_list.append(activity.athlete)
 
     age_graded_activities = Activity.objects.filter(race=race, hidden_from_results=False).order_by('-age_grade')
