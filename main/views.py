@@ -54,7 +54,6 @@ def race_results(request, race_id):
     }
     return render(request, 'main/race_results.html', template_context)
 
-
 def event_results(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     legs = Race.objects.filter(event=event).order_by('start_date', 'name')
@@ -89,10 +88,13 @@ def event_results(request, event_id):
 
         results_dict[team.name] = team_leg_list, team_total_time
 
+    # Sort by total time, putting unfinished teams at the end
+    sorted_results_dict = dict(sorted(results_dict.items(), key=lambda item: timedelta.max if item[1][1] is None else item[1][1]))
+
     template_context = {
         'event': event,
         'leg_names': leg_dict.keys(),
-        'results_dict': results_dict,
+        'results_dict': sorted_results_dict,
     }
     return render(request, 'main/relay_leaderboard.html', template_context)
 
