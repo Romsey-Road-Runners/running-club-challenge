@@ -34,8 +34,8 @@ if ENVIRONMENT == 'local':
 else:
     DEBUG = os.getenv('DJANGO_DEBUG', False)
     SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-    ALLOWED_HOSTS = ['challenge.romseyroadrunners.co.uk']
-    CSRF_TRUSTED_ORIGINS = ['https://challenge.romseyroadrunners.co.uk']
+    ALLOWED_HOSTS = ['results.romseyroadrunners.co.uk']
+    CSRF_TRUSTED_ORIGINS = ['https://results.romseyroadrunners.co.uk']
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -57,7 +57,7 @@ else:
     ADMINS = [('Site Admin', EMAIL_HOST_USER)]
 
 # Email subject prefix used for emails to admins or managers
-EMAIL_SUBJECT_PREFIX = '[RRR Club Challenge] '
+EMAIL_SUBJECT_PREFIX = '[RRR Club Results] '
 
 # Application definition
 
