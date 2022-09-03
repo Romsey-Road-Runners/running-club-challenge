@@ -12,11 +12,54 @@ from datetime import date, timedelta
 def event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     races = Race.objects.filter(event=event).order_by('start_date', 'name')
-    template_context = {
-        'event': event,
-        'race_list': races
-    }
-    return render(request, 'main/event.html', template_context)
+
+    if event.relay:
+        leg_dict = {}
+        for leg in races:
+            leg_results = Activity.objects.filter(race=leg, hidden_from_results=False).order_by('elapsed_time')
+            leg_dict[leg.name] = leg_results
+
+        results_dict = {}
+        teams = EventTeam.objects.filter(event=event)
+        for team in teams:
+            team_leg_dict = {}
+            athletes = EventTeamAthlete.objects.filter(event_team=team)
+            for athlete in athletes:
+                for leg, results in leg_dict.items():
+                    for result in results:
+                        if result.athlete.id == athlete.id:
+                            team_leg_dict[leg] = result.elapsed_time
+            team_leg_list = []
+            team_leg_count = 0
+            for leg in leg_dict.keys():
+                if leg in team_leg_dict:
+                    team_leg_list.append(team_leg_dict[leg])
+                    team_leg_count += 1
+                else:
+                    team_leg_list.append(None)
+    
+            if team_leg_count == len(races):
+                team_total_time = sum(team_leg_list, timedelta())
+            else:
+                team_total_time = None
+
+            results_dict[team.name] = team_leg_list, team_total_time
+
+        # Sort by total time, putting unfinished teams at the end
+        sorted_results_dict = dict(sorted(results_dict.items(), key=lambda item: timedelta.max if item[1][1] is None else item[1][1]))
+
+        template_context = {
+            'event': event,
+            'leg_names': leg_dict.keys(),
+            'results_dict': sorted_results_dict,
+        }
+        return render(request, 'main/event.html', template_context)
+    else:
+        template_context = {
+            'event': event,
+            'race_list': races
+        }
+        return render(request, 'main/event.html', template_context)
 
 def race_results(request, race_id):
     race = get_object_or_404(Race, id=race_id)
@@ -53,50 +96,6 @@ def race_results(request, race_id):
         'results_dict': results_dict,
     }
     return render(request, 'main/race_results.html', template_context)
-
-def event_results(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
-    legs = Race.objects.filter(event=event).order_by('start_date', 'name')
-    leg_dict = {}
-    for leg in legs:
-        leg_results = Activity.objects.filter(race=leg, hidden_from_results=False).order_by('elapsed_time')
-        leg_dict[leg.name] = leg_results
-
-    results_dict = {}
-    teams = EventTeam.objects.filter(event=event)
-    for team in teams:
-        team_leg_dict = {}
-        athletes = EventTeamAthlete.objects.filter(event_team=team)
-        for athlete in athletes:
-            for leg, results in leg_dict.items():
-                for result in results:
-                    if result.athlete.id == athlete.id:
-                        team_leg_dict[leg] = result.elapsed_time
-        team_leg_list = []
-        team_leg_count = 0
-        for leg in leg_dict.keys():
-            if leg in team_leg_dict:
-                team_leg_list.append(team_leg_dict[leg])
-                team_leg_count += 1
-            else:
-                team_leg_list.append(None)
- 
-        if team_leg_count == len(legs):
-            team_total_time = sum(team_leg_list, timedelta())
-        else:
-            team_total_time = None
-
-        results_dict[team.name] = team_leg_list, team_total_time
-
-    # Sort by total time, putting unfinished teams at the end
-    sorted_results_dict = dict(sorted(results_dict.items(), key=lambda item: timedelta.max if item[1][1] is None else item[1][1]))
-
-    template_context = {
-        'event': event,
-        'leg_names': leg_dict.keys(),
-        'results_dict': sorted_results_dict,
-    }
-    return render(request, 'main/relay_leaderboard.html', template_context)
 
 @login_required
 def submit_result(request):

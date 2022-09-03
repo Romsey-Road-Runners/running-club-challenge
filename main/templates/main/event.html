@@ -111,6 +111,39 @@
     {% else %}
     <p>No races are available yet.</p>
     {% endif %}
+    {% if event.relay %}
+    <h3>Results</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Team Name</th>
+            {% for leg in leg_names %}
+            <th scope="col">{{ leg }}</th>
+            {% endfor %}
+            <th scope="col">Total Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for team_name, results_tuple in results_dict.items %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>
+               {{ team_name }}
+            </td>
+            {% for leg_result in results_tuple.0 %}
+            <td>
+                {{ leg_result }}
+            </td>
+            {% endfor %}
+            <td>
+                {{ results_tuple.1 }}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
     {% if event.description_html %}
     {% autoescape off %}
     {{ event.description_html }}
