@@ -18,17 +18,16 @@ def event(request, event_id):
         for leg in races:
             leg_results = Activity.objects.filter(race=leg, hidden_from_results=False).order_by('elapsed_time')
             leg_dict[leg.name] = leg_results
-
         results_dict = {}
         teams = EventTeam.objects.filter(event=event)
         for team in teams:
             team_leg_dict = {}
-            athletes = EventTeamAthlete.objects.filter(event_team=team)
-            for athlete in athletes:
-                for leg, results in leg_dict.items():
+            event_team_athletes = EventTeamAthlete.objects.filter(event_team=team)
+            for event_team_athlete in event_team_athletes:
+                for leg_name, results in leg_dict.items():
                     for result in results:
-                        if result.athlete.id == athlete.id:
-                            team_leg_dict[leg] = result.elapsed_time
+                        if result.athlete.id == event_team_athlete.athlete.id:
+                            team_leg_dict[leg_name] = result.elapsed_time
             team_leg_list = []
             team_leg_count = 0
             for leg in leg_dict.keys():
@@ -52,6 +51,7 @@ def event(request, event_id):
             'event': event,
             'leg_names': leg_dict.keys(),
             'results_dict': sorted_results_dict,
+            'race_list': races
         }
         return render(request, 'main/event.html', template_context)
     else:
