@@ -36,7 +36,8 @@ def event(request, event_id):
                 for leg_name, results in leg_dict.items():
                     for result in results:
                         if result.athlete.id == event_team_athlete.athlete.id:
-                            team_leg_dict[leg_name] = result.elapsed_time
+                            if leg_name not in team_leg_dict or team_leg_dict[leg_name] > result.elapsed_time:
+                                team_leg_dict[leg_name] = result.elapsed_time
             team_leg_list = []
             team_leg_count = 0
             for leg in leg_dict.keys():
@@ -217,10 +218,8 @@ def event_team_results(request, event_id, event_team_id):
         leg_results = Activity.objects.filter(
             race=leg, hidden_from_results=False, athlete__in=athletes
         ).order_by("elapsed_time")
-        if leg_results:
-            results_list.append(leg_results[0])
+        results_list.extend(leg_results)
 
-    print(results_list)
     template_context = {
         "team_name": event_team.name,
         "results_list": results_list,
