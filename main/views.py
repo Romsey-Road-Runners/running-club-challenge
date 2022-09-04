@@ -19,46 +19,42 @@ from datetime import date, timedelta
 def event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     races = Race.objects.filter(event=event).order_by("start_date", "name")
+    results_dict = {}
 
     if event.relay:
         leg_dict = {}
-        for leg in races:
-            leg_results = Activity.objects.filter(
-                race=leg, hidden_from_results=False
-            ).order_by("elapsed_time")
-            leg_dict[leg.name] = leg_results
+        # Team = leg,result list + total time
         results_dict = {}
         teams = EventTeam.objects.filter(event=event)
         for team in teams:
-            team_leg_dict = {}
+            results_dict[team] = {"results": {}}
             event_team_athletes = EventTeamAthlete.objects.filter(event_team=team)
+            athletes = []
             for event_team_athlete in event_team_athletes:
-                for leg_name, results in leg_dict.items():
-                    for result in results:
-                        if result.athlete.id == event_team_athlete.athlete.id:
-                            if leg_name not in team_leg_dict or team_leg_dict[leg_name] > result.elapsed_time:
-                                team_leg_dict[leg_name] = result.elapsed_time
-            team_leg_list = []
-            team_leg_count = 0
-            for leg in leg_dict.keys():
-                if leg in team_leg_dict:
-                    team_leg_list.append(team_leg_dict[leg])
-                    team_leg_count += 1
-                else:
-                    team_leg_list.append(None)
+                athletes.append(event_team_athlete.athlete)
 
-            if team_leg_count == len(races):
-                team_total_time = sum(team_leg_list, timedelta())
-            else:
+            team_total_time = timedelta()
+            for leg in races:
+                leg_results = Activity.objects.filter(
+                    race=leg, hidden_from_results=False, athlete__in=athletes
+                ).order_by("elapsed_time")
+
+                if leg_results:
+                    team_total_time += leg_results[0].elapsed_time
+                    results_dict[team]["results"][leg.name] = leg_results[0]
+                else:
+                    results_dict[team]["results"][leg.name] = None
+
+            if None in results_dict[team]["results"].values():
                 team_total_time = None
 
-            results_dict[team] = team_leg_list, team_total_time
+            results_dict[team]["total_time"] = team_total_time
 
         # Sort by total time, putting unfinished teams at the end
         sorted_results_dict = dict(
             sorted(
                 results_dict.items(),
-                key=lambda item: timedelta.max if item[1][1] is None else item[1][1],
+                key=lambda item: timedelta.max if item[1]["total_time"] is None else item[1]["total_time"],
             )
         )
 

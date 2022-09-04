@@ -131,19 +131,27 @@
         </tr>
         </thead>
         <tbody>
-        {% for team, results_tuple in results_dict.items %}
+        {% for team, legs in results_dict.items %}
         <tr>
             <th scope="row">{{ forloop.counter }}</th>
             <td>
                 <a href="{% url 'event_team_results' event.id team.id %}">{{ team.name }}</a>
             </td>
-            {% for leg_result in results_tuple.0 %}
+            {% for leg, result in legs.results.items %}
             <td>
-                {{ leg_result }}
+                {% if result %}
+                {{ result.elapsed_time }}
+                {% else %}
+                N/A
+                {% endif %}
             </td>
             {% endfor %}
             <td>
-                {{ results_tuple.1 }}
+              {% if legs.total_time %}
+              {{ legs.total_time }}
+              {% else %}
+              N/A
+              {% endif %}
             </td>
         </tr>
         {% endfor %}
