@@ -79,6 +79,12 @@
     </script>
     {% endif %}
 
+    {% if event.description_html %}
+    {% autoescape off %}
+    {{ event.description_html }}
+    {% endautoescape %}
+    {% endif %}
+
     {% if event.relay %}
     <h2>Legs</h2>
     {% else %}
@@ -143,11 +149,6 @@
         {% endfor %}
         </tbody>
     </table>
-    {% endif %}
-    {% if event.description_html %}
-    {% autoescape off %}
-    {{ event.description_html }}
-    {% endautoescape %}
     {% endif %}
 </div>
 {% endblock content %}
