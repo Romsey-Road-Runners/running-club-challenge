@@ -54,7 +54,9 @@ def event(request, event_id):
         sorted_results_dict = dict(
             sorted(
                 results_dict.items(),
-                key=lambda item: timedelta.max if item[1]["total_time"] is None else item[1]["total_time"],
+                key=lambda item: timedelta.max
+                if item[1]["total_time"] is None
+                else item[1]["total_time"],
             )
         )
 

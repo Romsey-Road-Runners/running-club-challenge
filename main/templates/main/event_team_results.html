@@ -38,8 +38,7 @@
                 </td>
                 <td>
                     {% if result.strava_activity_id and user.is_authenticated %}
-                    <a href="https://www.strava.com/activities/{{ result.strava_activity_id }}">{{ result.elapsed_time
-                        }}</a>
+                    <a href="https://www.strava.com/activities/{{ result.strava_activity_id }}">{{ result.elapsed_time }}</a>
                     {% elif result.evidence_file and user.is_authenticated %}
                     <a href="{{ result.evidence_file.url }}">{{ result.elapsed_time }}</a>
                     {% else %}
