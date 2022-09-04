@@ -110,7 +110,7 @@
             <th scope="row">{{ forloop.counter }}</th>
             <td>
                 {% if result.0.athlete.photo and user.is_authenticated %}
-                <img src="{{ result.athlete.photo.url }}" class="rounded-circle" style="width: 32;" />
+                <img src="{{ result.0.athlete.photo.url }}" class="rounded-circle" style="width: 32;" />
                 {% endif %}
                 {% if user.is_authenticated %}
                 {{ result.0.athlete.user.first_name }} {{ result.0.athlete.user.last_name }}
@@ -120,16 +120,18 @@
             </td>
             <td>
                 {% if result.0.strava_activity_id and user.is_authenticated %}
-                <a href="https://www.strava.com/activities/{{ result.strava_activity_id }}">{{ result.elapsed_time }}</a>
+                <a href="https://www.strava.com/activities/{{ result.0.strava_activity_id }}">{{ result.0.elapsed_time }}</a>
                 {% elif result.0.evidence_file and user.is_authenticated %}
-                <a href="{{ result.evidence_file.url }}">{{ result.elapsed_time }}</a>
+                <a href="{{ result.0.evidence_file.url }}">{{ result.0.elapsed_time }}</a>
                 {% else %}
                 {{ result.0.elapsed_time }}
                 {% endif %}
             </td>
             <td>{{ result.0.age_grade|floatformat:2 }}%</td>
             {% if race.event.relay %}
-            <td>{{ result.1.name }}</th>
+            <td>
+                <a href="{% url 'event_team_results' race.event_id result.1.id %}">{{ result.1.name }}</a>
+            </td>
             {% endif %}
         </tr>
         {% endfor %}

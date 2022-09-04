@@ -6,6 +6,11 @@ from . import views
 urlpatterns = [
     path("events", views.event_list, name="event_list"),
     path("event/<int:event_id>", views.event, name="event"),
+    path(
+        "event/<int:event_id>/<int:event_team_id>",
+        views.event_team_results,
+        name="event_team_results",
+    ),
     path("races/<int:race_id>", views.race_results, name="race_results"),
     path("submit_result", views.submit_result, name="submit_result"),
     path(

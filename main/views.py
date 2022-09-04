@@ -51,7 +51,7 @@ def event(request, event_id):
             else:
                 team_total_time = None
 
-            results_dict[team.name] = team_leg_list, team_total_time
+            results_dict[team] = team_leg_list, team_total_time
 
         # Sort by total time, putting unfinished teams at the end
         sorted_results_dict = dict(
@@ -113,7 +113,13 @@ def race_results(request, race_id):
                 dict_list = "Female Age Graded"
             else:
                 dict_list = "Male Age Graded"
-            results_dict[dict_list].append(age_graded_activity)
+            if race.event.relay:
+                event_team_athlete = event_team_athletes.get(athlete=activity.athlete)
+                results_dict[dict_list].append(
+                    (age_graded_activity, event_team_athlete.event_team)
+                )
+            else:
+                results_dict[dict_list].append((age_graded_activity, None))
             age_graded_processed_athlete_list.append(age_graded_activity.athlete)
 
     template_context = {
@@ -194,3 +200,29 @@ def index(request):
     events = Event.objects.filter(active=True).order_by("name")
     template_context = {"event_list": events}
     return render(request, "main/index.html", template_context)
+
+
+def event_team_results(request, event_id, event_team_id):
+    event_team = get_object_or_404(EventTeam, id=event_team_id)
+    event_team_athletes = EventTeamAthlete.objects.filter(event_team=event_team)
+    athletes = []
+    for event_team_athlete in event_team_athletes:
+        athletes.append(event_team_athlete.athlete)
+
+    event = get_object_or_404(Event, id=event_id)
+    races = Race.objects.filter(event=event).order_by("start_date", "name")
+
+    results_list = []
+    for leg in races:
+        leg_results = Activity.objects.filter(
+            race=leg, hidden_from_results=False, athlete__in=athletes
+        ).order_by("elapsed_time")
+        if leg_results:
+            results_list.append(leg_results[0])
+
+    print(results_list)
+    template_context = {
+        "team_name": event_team.name,
+        "results_list": results_list,
+    }
+    return render(request, "main/event_team_results.html", template_context)
