@@ -111,6 +111,8 @@
             <td>
                 {% if result.0.athlete.photo and user.is_authenticated %}
                 <img src="{{ result.0.athlete.photo.url }}" class="rounded-circle" style="width: 32;" />
+                {% else %}
+                <img src="{% static 'main/nophoto.png' %}" class="rounded-circle" style="width: 32;" />
                 {% endif %}
                 {% if user.is_authenticated %}
                 {{ result.0.athlete.user.first_name }} {{ result.0.athlete.user.last_name }}
