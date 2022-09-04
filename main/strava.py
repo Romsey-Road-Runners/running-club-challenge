@@ -27,11 +27,13 @@ def update_user_strava_token(token):
         refresh_response = client.refresh_access_token(
             client_id=token.app.client_id,
             client_secret=token.app.secret,
-            refresh_token=token.token_secret
+            refresh_token=token.token_secret,
         )
-        token.token = refresh_response['access_token']
-        token.secret = refresh_response['refresh_token']
-        token.expires_at = datetime.datetime.fromtimestamp(refresh_response['expires_at'], tz=datetime.timezone.utc)
+        token.token = refresh_response["access_token"]
+        token.secret = refresh_response["refresh_token"]
+        token.expires_at = datetime.datetime.fromtimestamp(
+            refresh_response["expires_at"], tz=datetime.timezone.utc
+        )
         token.save()
         logger.info(f"Refreshed Strava token for {token.account}")
     logger.debug(f"Did not need to refresh Strava token for {token.account}")
@@ -39,7 +41,9 @@ def update_user_strava_token(token):
 
 def update_user_strava_activities(user):
     if not user.is_active:
-        logger.info(f"Skipping Strava update for {user.first_name} {user.last_name} until their account is activated")
+        logger.info(
+            f"Skipping Strava update for {user.first_name} {user.last_name} until their account is activated"
+        )
         return
     token = get_user_strava_token(user)
     if not token:
@@ -60,20 +64,31 @@ def update_user_strava_activities(user):
         start_date__lte=datetime.date.today(),
     )
     for strava_activity in strava_activities:
-        logger.debug(f"Processing strava activity ({strava_activity.id}) {strava_activity.name} for {user.first_name} {user.last_name}")
-        logger.debug(f"Activity distance {strava_activity.distance}, date {strava_activity.start_date} and time {strava_activity.elapsed_time}")
-        if strava_activity.type == 'Run' or strava_activity.type == 'Walk':
+        logger.debug(
+            f"Processing strava activity ({strava_activity.id}) {strava_activity.name} for {user.first_name} {user.last_name}"
+        )
+        logger.debug(
+            f"Activity distance {strava_activity.distance}, date {strava_activity.start_date} and time {strava_activity.elapsed_time}"
+        )
+        if strava_activity.type == "Run" or strava_activity.type == "Walk":
             for race in races:
                 race_distance_km = race_distance_in_km(race)
                 strava_name_sanitised = " ".join(strava_activity.name.lower().split())
                 strava_distance_km = unithelper.kilometers(strava_activity.distance).num
-                if race.start_date <= strava_activity.start_date.date() <= race.end_date \
-                        and race.match_text.lower() in strava_name_sanitised \
-                        and race_distance_km * 0.98 < strava_distance_km < race_distance_km * 1.05:
+                if (
+                    race.start_date
+                    <= strava_activity.start_date.date()
+                    <= race.end_date
+                    and race.match_text.lower() in strava_name_sanitised
+                    and race_distance_km * 0.98
+                    < strava_distance_km
+                    < race_distance_km * 1.05
+                ):
                     logger.info(
                         f"Found match for race {race.name}: {strava_activity.name} for {user.first_name} "
                         f"{user.last_name} of distance {round(strava_distance_km, 2)}km at {strava_activity.start_date} "
-                        f"and time {strava_activity.elapsed_time}")
+                        f"and time {strava_activity.elapsed_time}"
+                    )
                     create_update_activity(
                         race=race,
                         athlete=get_athlete_for_user(user),

@@ -1,7 +1,10 @@
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.account.forms import SignupForm
 from allauth.account.models import EmailAddress
-from allauth.socialaccount.adapter import get_account_adapter, DefaultSocialAccountAdapter
+from allauth.socialaccount.adapter import (
+    get_account_adapter,
+    DefaultSocialAccountAdapter,
+)
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django import forms
 from django.contrib.sites.models import Site
@@ -48,10 +51,10 @@ class DeactivateAccountAdapter(DefaultAccountAdapter):
             # Create an Athlete
             sex = None
             dob = None
-            if 'sex' in data:
-                sex = data['sex']
-            if 'dob' in data:
-                dob = data['dob']
+            if "sex" in data:
+                sex = data["sex"]
+            if "dob" in data:
+                dob = data["dob"]
             create_update_athlete(
                 user=user,
                 sex=sex,
@@ -96,12 +99,15 @@ class DeactivateSocialAccountAdapter(DefaultSocialAccountAdapter):
             sex = None
             photo = None
             dob = None
-            if form and 'dob' in form.cleaned_data:
-                dob = form.cleaned_data['dob']
-            if 'sex' in sociallogin.account.extra_data and sociallogin.account.extra_data['sex'] in ['F', 'M']:
-                sex = sociallogin.account.extra_data['sex']
-            if 'profile' in sociallogin.account.extra_data:
-                photo = sociallogin.account.extra_data['profile']
+            if form and "dob" in form.cleaned_data:
+                dob = form.cleaned_data["dob"]
+            if (
+                "sex" in sociallogin.account.extra_data
+                and sociallogin.account.extra_data["sex"] in ["F", "M"]
+            ):
+                sex = sociallogin.account.extra_data["sex"]
+            if "profile" in sociallogin.account.extra_data:
+                photo = sociallogin.account.extra_data["profile"]
         create_update_athlete(
             user=u,
             sex=sex,
@@ -113,12 +119,9 @@ class DeactivateSocialAccountAdapter(DefaultSocialAccountAdapter):
 
 
 class AccountSignupForm(SignupForm):
-    first_name = forms.CharField(max_length=150, label='First Name')
-    last_name = forms.CharField(max_length=150, label='Last Name')
-    SEX_CHOICES = [
-        ('F', 'Female'),
-        ('M', 'Male')
-    ]
+    first_name = forms.CharField(max_length=150, label="First Name")
+    last_name = forms.CharField(max_length=150, label="Last Name")
+    SEX_CHOICES = [("F", "Female"), ("M", "Male")]
     sex = forms.ChoiceField(choices=SEX_CHOICES, label="Sex")
     dob = forms.DateField(label="Date of Birth")
 
@@ -137,9 +140,13 @@ class SocialAccountSignupForm(SocialSignupForm):
 def send_user_activation_email(user):
     site = Site.objects.get_current()
 
-    message_text = f'A new user has signed up to {site.name} with email address {user.email} and needs activation. ' \
-                   f'Please go to https://{site.domain}/admin/auth/user/ and set them to "Active" ' \
-                   'after verifying that they are a member of the club. \n\n' \
-                   'When you have done this you will need to email them to inform them that their account is now ' \
-                   'active, as this is not automated.'
-    mail_admins(f'User {user.first_name} {user.last_name} needs manual activation', message_text)
+    message_text = (
+        f"A new user has signed up to {site.name} with email address {user.email} and needs activation. "
+        f'Please go to https://{site.domain}/admin/auth/user/ and set them to "Active" '
+        "after verifying that they are a member of the club. \n\n"
+        "When you have done this you will need to email them to inform them that their account is now "
+        "active, as this is not automated."
+    )
+    mail_admins(
+        f"User {user.first_name} {user.last_name} needs manual activation", message_text
+    )

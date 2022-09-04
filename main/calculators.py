@@ -21,8 +21,11 @@ def get_athlete_age(athlete, date):
     if not date_of_birth:
         return None
 
-    return date.year - date_of_birth.year - \
-           ((date.month, date.day) < (date_of_birth.month, date_of_birth.day))
+    return (
+        date.year
+        - date_of_birth.year
+        - ((date.month, date.day) < (date_of_birth.month, date_of_birth.day))
+    )
 
 
 def race_distance_in_km(race):

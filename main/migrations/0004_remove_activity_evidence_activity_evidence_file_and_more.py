@@ -6,27 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0003_race_match_text'),
+        ("main", "0003_race_match_text"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='activity',
-            name='evidence',
+            model_name="activity",
+            name="evidence",
         ),
         migrations.AddField(
-            model_name='activity',
-            name='evidence_file',
-            field=models.FileField(blank=True, null=True, upload_to=''),
+            model_name="activity",
+            name="evidence_file",
+            field=models.FileField(blank=True, null=True, upload_to=""),
         ),
         migrations.AddField(
-            model_name='activity',
-            name='evidence_image',
-            field=models.ImageField(blank=True, null=True, upload_to=''),
+            model_name="activity",
+            name="evidence_image",
+            field=models.ImageField(blank=True, null=True, upload_to=""),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='age_grade',
+            model_name="activity",
+            name="age_grade",
             field=models.FloatField(blank=True),
         ),
     ]

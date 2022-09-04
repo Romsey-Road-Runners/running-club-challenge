@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0009_race_submissions_close'),
+        ("main", "0009_race_submissions_close"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='race',
-            name='distance',
+            model_name="race",
+            name="distance",
             field=models.DecimalField(decimal_places=2, max_digits=5),
         ),
     ]

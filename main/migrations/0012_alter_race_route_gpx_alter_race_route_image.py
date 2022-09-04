@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0011_race_route_gpx_race_route_image'),
+        ("main", "0011_race_route_gpx_race_route_image"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='race',
-            name='route_gpx',
-            field=models.FileField(blank=True, null=True, upload_to='route-gpx'),
+            model_name="race",
+            name="route_gpx",
+            field=models.FileField(blank=True, null=True, upload_to="route-gpx"),
         ),
         migrations.AlterField(
-            model_name='race',
-            name='route_image',
-            field=models.FileField(blank=True, null=True, upload_to='route-image'),
+            model_name="race",
+            name="route_image",
+            field=models.FileField(blank=True, null=True, upload_to="route-image"),
         ),
     ]
