@@ -166,6 +166,7 @@ ACCOUNT_FORMS = {"signup": "challenge.auth_adapter.AccountSignupForm"}
 SOCIALACCOUNT_FORMS = {"signup": "challenge.auth_adapter.SocialAccountSignupForm"}
 
 SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_STORE_TOKENS = True
 
 LOGLEVEL = os.getenv("LOGLEVEL", "INFO")
 LOGGING = {

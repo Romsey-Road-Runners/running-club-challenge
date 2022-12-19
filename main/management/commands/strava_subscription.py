@@ -13,7 +13,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--recycle",
             action="store_true",
-            help="Delete any exist Strava webhook subscriptions",
+            help="Delete any existing Strava webhook subscriptions",
         )
 
     def handle(self, *args, **options):
