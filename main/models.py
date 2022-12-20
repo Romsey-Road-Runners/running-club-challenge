@@ -52,7 +52,7 @@ class Event(models.Model):
 
 class EventTeam(models.Model):
     def __str__(self):
-        return self.name
+        return f"{self.event.name} - {self.name}"
 
     name = models.CharField(max_length=254)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -68,7 +68,7 @@ class EventTeamAthlete(models.Model):
 
 class Race(models.Model):
     def __str__(self):
-        return self.name
+        return f"{self.event.name} - {self.name}"
 
     name = models.CharField(max_length=254)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
