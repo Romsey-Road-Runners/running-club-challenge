@@ -2,7 +2,6 @@ import datetime
 import logging
 
 from allauth.socialaccount.models import SocialAccount, SocialToken
-from contextlib import closing
 from stravalib import unithelper
 from stravalib.client import Client
 
@@ -24,13 +23,12 @@ def get_user_strava_token(user):
 
 def update_user_strava_token(token):
     if token.expires_at < datetime.datetime.now(tz=datetime.timezone.utc):
-        with closing(Client()) as client:
-            refresh_response = client.refresh_access_token(
-                client_id=token.app.client_id,
-                client_secret=token.app.secret,
-                refresh_token=token.token_secret,
-            )
-
+        client = Client()
+        refresh_response = client.refresh_access_token(
+            client_id=token.app.client_id,
+            client_secret=token.app.secret,
+            refresh_token=token.token_secret,
+        )
         token.token = refresh_response["access_token"]
         token.secret = refresh_response["refresh_token"]
         token.expires_at = datetime.datetime.fromtimestamp(
@@ -56,13 +54,11 @@ def update_user_strava_activities(user):
 
     logger.info(f"Updating Strava activities for {user.first_name} {user.last_name}")
     a_week_ago = datetime.datetime.now() - datetime.timedelta(days=7)
-
-    with closing(Client()) as client:
-        client.access_token = token.token
-        client.refresh_token = token.token_secret
-        client.token_expires_at = token.expires_at
-        strava_activities = client.get_activities(after=a_week_ago)
-
+    client = Client()
+    client.access_token = token.token
+    client.refresh_token = token.token_secret
+    client.token_expires_at = token.expires_at
+    strava_activities = client.get_activities(after=a_week_ago)
     races = Race.objects.filter(
         submissions_close__gte=datetime.date.today(),
         start_date__lte=datetime.date.today(),
@@ -84,8 +80,7 @@ def update_user_strava_activities(user):
                     race.start_date
                     <= strava_activity.start_date.date()
                     <= race.end_date
-                    and len(race_match_text_word_set.intersection(strava_name_word_set))
-                    == len(race_match_text_word_set)
+                    and len(race_match_text_word_set.intersection(strava_name_word_set)) == len(race_match_text_word_set)
                     and race_distance_km * 0.98
                     < strava_distance_km
                     < race_distance_km * 1.05
