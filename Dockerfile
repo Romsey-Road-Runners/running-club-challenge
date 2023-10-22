@@ -1,7 +1,7 @@
 # Set up a base build container and use to install pip dependencies
 FROM python:3.11-slim-bookworm as base
 FROM base as builder
-RUN apt update -y && apt install -y build-essential libpq-dev
+RUN apt update -y && apt install -y build-essential libmariadbd-dev pkg-config
 RUN pip install pipenv
 RUN mkdir /install
 WORKDIR /install
@@ -14,7 +14,7 @@ FROM base
 COPY --from=builder /install /usr/local
 
 # Install libpq package to make psycopg2 work
-RUN apt update -y && apt install -y libpq5 && apt clean
+RUN apt update -y && apt install -y mariadb-client && apt clean
 
 # Set up /app as our runtime directory
 RUN mkdir /app

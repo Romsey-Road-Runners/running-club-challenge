@@ -1,0 +1,73 @@
+services:
+  database:
+    image: mariadb:10.11
+    container_name: rrr-club-challenge-database
+    restart: unless-stopped
+    networks:
+      - rrr-club-challenge
+    ports:
+      - "3306"
+    volumes:
+      - database:/var/lib/mysql
+    env_file: database.env
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 5s
+
+  challenge-nginx:
+    image: nginx:1-alpine
+    container_name: rrr-club-challenge-nginx
+    restart: unless-stopped
+    networks:
+      - rrr-club-challenge
+    ports:
+      - "80"    # http
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+      - static:/static
+
+  challenge-app:
+    build: .
+    container_name: rrr-club-challenge-app
+    command: /bin/sh -c "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn --workers 4 --bind 0.0.0.0:7777 challenge.wsgi --keep-alive 5 --log-level info --access-logfile -"
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      challenge-nginx:
+        condition: service_started
+    env_file: challenge.env
+    environment:
+      LOGLEVEL: INFO
+    networks:
+      - rrr-club-challenge
+    ports:
+      - "7777"
+    volumes:
+      - static:/static
+
+  challenge-strava-sync:
+    build: .
+    container_name: rrr-club-challenge-sync
+    command: /bin/sh -c "while true; do python manage.py strava_update; sleep 7200; done"
+    restart: on-failure
+    depends_on:
+      database:
+        condition: service_healthy
+    env_file: challenge.env
+    environment:
+      LOGLEVEL: INFO
+    networks:
+      - rrr-club-challenge
+
+volumes:
+  static:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  database:
+
+networks:
+  rrr-club-challenge:
+    name: rrr-club-challenge
+    driver: bridge

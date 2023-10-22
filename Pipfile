@@ -11,8 +11,8 @@ pillow = "*"
 django-storages = "*"
 boto3 = "*"
 requests = "*"
-psycopg2-binary = "*"
 gunicorn = "*"
+mysqlclient = "*"
 
 [dev-packages]
 

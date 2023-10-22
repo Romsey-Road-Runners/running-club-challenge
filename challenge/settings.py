@@ -38,8 +38,8 @@ else:
     CSRF_TRUSTED_ORIGINS = ["https://results.romseyroadrunners.co.uk"]
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "HOST": "postgresql",
+            "ENGINE": "django.db.backends.mysql",
+            "HOST": "database",
             "USER": os.getenv("DB_USERNAME"),
             "PASSWORD": os.getenv("DB_PASSWORD"),
             "NAME": os.getenv("DB_NAME"),
