@@ -1,5 +1,5 @@
 # Set up a base build container and use to install pip dependencies
-FROM python:3.10-slim-bullseye as base
+FROM python:3.11-slim-bookworm as base
 FROM base as builder
 RUN apt update -y && apt install -y build-essential libpq-dev
 RUN pip install pipenv
