@@ -199,3 +199,4 @@ AWS_STORAGE_BUCKET_NAME = "rrr-club-challenge"
 AWS_S3_REGION_NAME = "nl-ams"
 AWS_S3_ENDPOINT_URL = "https://s3.nl-ams.scw.cloud"
 AWS_QUERYSTRING_AUTH = False
+AWS_DEFAULT_ACL = "public-read"
